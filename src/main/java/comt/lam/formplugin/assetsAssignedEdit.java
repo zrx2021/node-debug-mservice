@@ -28,7 +28,7 @@ public class assetsAssignedEdit extends AbstractBillPlugIn implements RowClickEv
         SetHeadValue();
     }
 
-    public void updataAppliedCount() {
+    public void updateAppliedCount() {
         DynamicObjectCollection parentsEntry = this.getModel().getEntryEntity("comt_assetappliy_en");
         for (DynamicObject parentsRow : parentsEntry) {
             int count = 0;
@@ -113,6 +113,6 @@ public class assetsAssignedEdit extends AbstractBillPlugIn implements RowClickEv
 
         basePlace = this.getModel().getValue("comt_baseplace");//设置分组为分配场地
         if (basePlace != null) this.getModel().setValue("group", basePlace);
-        updataAppliedCount();
+        updateAppliedCount();
     }
 }
