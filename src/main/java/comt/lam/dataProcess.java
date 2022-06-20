@@ -1,4 +1,4 @@
-package comt.lam.formplugin;
+package comt.lam;
 
 import kd.bos.bill.AbstractBillPlugIn;
 import kd.bos.dataentity.entity.DynamicObject;
@@ -16,7 +16,7 @@ import kd.bos.entity.property.LongProp;
 
 import java.math.BigDecimal;
 
-public class CheckEmptyValue extends AbstractBillPlugIn {
+public class dataProcess extends AbstractBillPlugIn {
     private static boolean hasEmpty = true;
 
     public boolean HasEmpty() {
@@ -24,7 +24,7 @@ public class CheckEmptyValue extends AbstractBillPlugIn {
     }
 
     private void setHasEmpty(boolean hasEmpty) {
-        CheckEmptyValue.hasEmpty = hasEmpty;
+        dataProcess.hasEmpty = hasEmpty;
     }
 
     public boolean CheckFailure(String... entryNames) {

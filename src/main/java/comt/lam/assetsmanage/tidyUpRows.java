@@ -1,5 +1,6 @@
-package comt.lam.formplugin;
+package comt.lam.assetsmanage;
 
+import comt.lam.dataProcess;
 import kd.bos.dataentity.entity.DynamicObject;
 import kd.bos.dataentity.entity.DynamicObjectCollection;
 import kd.bos.dataentity.utils.StringUtils;
@@ -11,7 +12,6 @@ import kd.bos.form.control.EntryGrid;
 import kd.bos.form.control.events.BeforeItemClickEvent;
 import kd.bos.form.control.events.RowClickEvent;
 import kd.bos.form.control.events.RowClickEventListener;
-import kd.bos.form.events.AfterDoOperationEventArgs;
 import kd.bos.form.events.BeforeDoOperationEventArgs;
 import kd.bos.form.field.BasedataEdit;
 import kd.bos.form.field.events.AfterF7SelectEvent;
@@ -22,7 +22,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Set;
 
-public class tidyUpRows extends CheckEmptyValue implements AfterF7SelectListener, RowClickEventListener {
+public class tidyUpRows extends dataProcess implements AfterF7SelectListener, RowClickEventListener {
     @Override
     public void registerListener(EventObject e) {
         BasedataEdit base = this.getView().getControl("comt_places");

@@ -1,4 +1,4 @@
-package comt.lam.formplugin;
+package comt.lam.assetsmanage;
 
 import kd.bos.bill.AbstractBillPlugIn;
 import kd.bos.dataentity.entity.DynamicObject;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.EventObject;
 import java.util.HashMap;
 
-public class assetsAssignedEdit extends AbstractBillPlugIn implements RowClickEventListener {
+public class assetsAssigned extends AbstractBillPlugIn implements RowClickEventListener {
     @Override
     public void registerListener(EventObject e) {
         super.registerListener(e);
