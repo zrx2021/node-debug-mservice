@@ -9,12 +9,16 @@ import kd.bos.dataentity.metadata.dynamicobject.DynamicComplexProperty;
 import kd.bos.dataentity.metadata.dynamicobject.DynamicSimpleProperty;
 import kd.bos.entity.MainEntityType;
 import kd.bos.entity.SubEntryType;
+import kd.bos.entity.datamodel.IDataModel;
 import kd.bos.entity.property.BasedataProp;
 import kd.bos.entity.property.DecimalProp;
 import kd.bos.entity.property.FieldProp;
 import kd.bos.entity.property.LongProp;
+import kd.bos.form.control.EntryGrid;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Set;
 
 public class dataProcess extends AbstractBillPlugIn {
     private static boolean hasEmpty = true;
@@ -118,5 +122,55 @@ public class dataProcess extends AbstractBillPlugIn {
                 return String.format("父母单据体 %s 的第 %d 行的 %s 字段的值为0\n如果有不需要分配的物件，请删除行", entryDisplayName, index, propertyDisplayName);
             }
         }
+    }
+
+    public int MergeSubEntry(String parentsKey, String subKey, String availableKey, String baseDataKey, String stepperKey, String[] Notification) {//把相同基础资料（如：地点）的行合拼在一起
+        IDataModel model = this.getModel();
+        DynamicObjectCollection parentsEntry = model.getEntryEntity(parentsKey);
+        DynamicObjectCollection subEntry;
+        HashMap<Object, Integer> sameBaseData = new HashMap<>();
+        EntryGrid entryGrid = this.getView().getControl(parentsKey);
+        int[] selectRows = entryGrid.getSelectRows();
+        int parentsSelectedRow;
+        int available;
+
+        if (selectRows.length != 1) {//父母单据体选择行数不为1行
+            this.getView().showErrorNotification(Notification[0]);
+            model.deleteEntryData("comt_subentry");
+            this.getView().updateView();
+            return -1;
+        } else {
+            parentsSelectedRow = selectRows[0];
+            DynamicObject selectedRow = parentsEntry.get(parentsSelectedRow);
+            available = selectedRow.getBigDecimal(availableKey).intValue();
+        }
+
+        subEntry = parentsEntry.get(parentsSelectedRow).getDynamicObjectCollection(subKey);
+        for (DynamicObject subRow : subEntry) {
+            Object baseData = subRow.get(baseDataKey);
+            int stepper = subRow.getBigDecimal(stepperKey).intValue();
+            sameBaseData.merge(baseData, stepper, Integer::sum);
+        }
+
+        model.deleteEntryData(subKey);
+
+        Set<Object> BaseDataSet = sameBaseData.keySet();
+        int total = 0;
+        for (Object BaseData : BaseDataSet) {
+            Integer count = sameBaseData.get(BaseData);
+            if (total + count > available) {//累计大于父母单据体时触发
+                this.getView().showErrorNotification(Notification[1]);
+                this.getView().updateView();
+                return -1;
+            }
+            total += count;
+            int index = model.createNewEntryRow(subKey);
+            DynamicObject newRow = model.getEntryRowEntity(subKey, index, parentsSelectedRow);
+            newRow.set(baseDataKey, BaseData);
+            newRow.set(stepperKey, count);
+            //TODO 子单据体除了地点和数量以及一些特殊字段之外，子单据体行也要根据这些字段进行合拼
+        }
+        this.getView().updateView();
+        return total;
     }
 }
