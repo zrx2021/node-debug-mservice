@@ -26,7 +26,7 @@ public class book extends dataProcess implements RowClickEventListener, AfterF7S
     @Override
     public void registerListener(EventObject e) {
         super.registerListener(e);
-        EntryGrid entryGrid = this.getView().getControl("comt_book_entry");
+        EntryGrid entryGrid = this.getView().getControl("comt_listbook_entry");
         BasedataEdit basedataEdit = this.getView().getControl("comt_bookname");
         entryGrid.addRowClickListener(this);
         this.addItemClickListeners("bar_save", "bar_submitandnew", "bar_submit", "bar_audit");
@@ -43,7 +43,7 @@ public class book extends dataProcess implements RowClickEventListener, AfterF7S
             return;
         } else if (!operateKey.equals("newsubentry")) return;
         args.setCancel(true);
-        EntryGrid selectionEntry = this.getView().getControl("comt_book_entry");
+        EntryGrid selectionEntry = this.getView().getControl("comt_listbook_entry");
         DynamicObject[] rowsData = selectionEntry.getEntryData().getDataEntitys();
         int[] selectRows = selectionEntry.getSelectRows();
         if (selectRows.length != 1) {
@@ -60,7 +60,7 @@ public class book extends dataProcess implements RowClickEventListener, AfterF7S
         super.beforeItemClick(evt);
         if ("bar_save".equals(evt.getItemKey()) || "bar_submitandnew".equals(evt.getItemKey()) || "bar_submit".equals(evt.getItemKey())) {
             updateMergeCount();
-            String hasEmptyMessage = this.CheckEntry("comt_book_entry");
+            String hasEmptyMessage = this.CheckEntry("comt_listbook_entry");
             if (hasEmptyMessage == null) return;
             this.getView().showErrorNotification("已新增图书信息单据体有空的值，请检查，如已并入馆藏数量");
             evt.setCancel(true);
@@ -113,7 +113,7 @@ public class book extends dataProcess implements RowClickEventListener, AfterF7S
 
     private void quickBook() {
         HashMap<String, Object> map = new HashMap<>();
-        DynamicObjectCollection entryEntity = this.getModel().getEntryEntity("comt_book_entry");
+        DynamicObjectCollection entryEntity = this.getModel().getEntryEntity("comt_listbook_entry");
         map.put("entry", entryEntity);
         FormShowParameter parameter = new FormShowParameter();
         parameter.setFormId("comt_quickbook");
@@ -127,7 +127,7 @@ public class book extends dataProcess implements RowClickEventListener, AfterF7S
 
     private void updateMergeCount() {
         IDataModel model = this.getModel();
-        DynamicObjectCollection bookEntry = model.getEntryEntity("comt_book_entry");
+        DynamicObjectCollection bookEntry = model.getEntryEntity("comt_listbook_entry");
         DynamicObjectCollection bookSubEntry = model.getEntryEntity("comt_book_subentry");
         HashMap<Object, Integer> applyCounts = new HashMap<>();
         HashMap<Object, Integer> mapSelectEntry = new HashMap<>();//对选择单据体的物件进行散列，get方法返回行下标
